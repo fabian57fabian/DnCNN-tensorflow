@@ -18,25 +18,25 @@ args = parser.parse_args()
 
 
 def denoiser_train(denoiser, lr):
-        noisy_eval_files = glob('./data/train/noisy/*.png')
-        noisy_eval_files = sorted(noisy_eval_files)
-        eval_files = glob('./data/train/original/*.png')
-        eval_files = sorted(eval_files)
-        denoiser.train(eval_files, noisy_eval_files, batch_size=args.batch_size, ckpt_dir=args.ckpt_dir, epoch=args.epoch, lr=lr)
+    noisy_eval_files = glob('./data/train/noisy/*.png')
+    noisy_eval_files = sorted(noisy_eval_files)
+    eval_files = glob('./data/train/original/*.png')
+    eval_files = sorted(eval_files)
+    denoiser.train(eval_files, noisy_eval_files, batch_size=args.batch_size, ckpt_dir=args.ckpt_dir, epoch=args.epoch, lr=lr)
 
 
 def denoiser_test(denoiser):
-
     noisy_eval_files = glob('./data/test/noisy/*.png')
-#    n = [int(i) for i in map(lambda x: x.split('/')[-1].split('.png')[0], noisy_eval_files)]
-#    noisy_eval_files = [x for (y, x) in sorted(zip(n, noisy_eval_files))]
+    #    n = [int(i) for i in map(lambda x: x.split('/')[-1].split('.png')[0], noisy_eval_files)]
+    #    noisy_eval_files = [x for (y, x) in sorted(zip(n, noisy_eval_files))]
     noisy_eval_files = sorted(noisy_eval_files)
     eval_files = glob('./data/test/original/*.png')
     eval_files = sorted(eval_files)
     start = time.time()
     denoiser.test(eval_files, noisy_eval_files, ckpt_dir=args.ckpt_dir, save_dir='./data/denoised', temporal=args.temporal)
     end = time.time()
-    print "Elapsed time:", end-start
+    print("Elapsed time:{}".format(end - start))
+
 
 def main(_):
     if not os.path.exists(args.ckpt_dir):
@@ -71,12 +71,13 @@ def main(_):
                 print('[!]Unknown phase')
                 exit(0)
 
+
 def test():
     gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.9)
     with tf.Session(config=tf.ConfigProto(gpu_options=gpu_options)) as sess:
-      model = denoiser(sess)
-      denoiser_test(model)
+        model = denoiser(sess)
+        denoiser_test(model)
 
-  
+
 if __name__ == '__main__':
     tf.app.run()

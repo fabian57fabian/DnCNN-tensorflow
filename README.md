@@ -1,7 +1,10 @@
 # DnCNN-tensorflow   
 [![AUR](https://img.shields.io/aur/license/yaourt.svg?style=plastic)](LICENSE)
 [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=plastic)](CONTRIBUTING.md)
-  
+
+Originally cloned from [this](https://github.com/wbhu/DnCNN-tensorflow) repo.
+Made stable for python3 without errors.
+
 A tensorflow implement of the TIP2017 paper [Beyond a Gaussian Denoiser: Residual Learning of Deep CNN for Image Denoising](http://www4.comp.polyu.edu.hk/~cslzhang/paper/DnCNN.pdf)
 
 ## Model Architecture
