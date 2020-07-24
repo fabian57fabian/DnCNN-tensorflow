@@ -1,6 +1,7 @@
 import argparse
 from glob import glob
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+#tf.disable_v2_behavior()
 import time
 from model import denoiser
 import os
@@ -10,6 +11,7 @@ parser = argparse.ArgumentParser(description='')
 parser.add_argument('--epoch', dest='epoch', type=int, default=10, help='# of epochs')
 parser.add_argument('--batch_size', dest='batch_size', type=int, default=128, help='# images in batch')
 parser.add_argument('--lr', dest='lr', type=float, default=0.001, help='initial learning rate for adam')
+parser.add_argument('--gpu_frac', dest='gpu_frac', type=float, default=0.7, help='gpu fraction to be used (if out of memory error happends, lower this)')
 parser.add_argument('--use_gpu', dest='use_gpu', type=int, default=1, help='gpu flag, 1 for GPU and 0 for CPU')
 parser.add_argument('--phase', dest='phase', default='train', help='train or test')
 parser.add_argument('--checkpoint_dir', dest='ckpt_dir', default='./checkpoint', help='models are saved here')
@@ -49,9 +51,9 @@ def main(_):
     if args.use_gpu:
         # added to control the gpu memory
         print("GPU\n")
-        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.9)
+        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=args.gpu_frac)
         with tf.Session(config=tf.ConfigProto(gpu_options=gpu_options)) as sess:
-            model = denoiser(sess)
+            model = denoiser(sess, batch_size=args.batch_size)
             if args.phase == 'train':
                 denoiser_train(model, lr=lr)
             elif args.phase == 'test':

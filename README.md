@@ -3,7 +3,7 @@
 [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=plastic)](CONTRIBUTING.md)
 
 Originally cloned from [this](https://github.com/wbhu/DnCNN-tensorflow) repo.
-Made stable for python3 without errors.
+Made stable for python3 without errors. Works with tf >= 2.
 
 A tensorflow implement of the TIP2017 paper [Beyond a Gaussian Denoiser: Residual Learning of Deep CNN for Image Denoising](http://www4.comp.polyu.edu.hk/~cslzhang/paper/DnCNN.pdf)
 
@@ -33,7 +33,7 @@ The average PSNR(dB) results of different methods on the BSD68 dataset.
 
 ## Requirements
 ```
-tensorflow >= 1.4
+tensorflow >= 2
 numpy
 opencv
 ```
@@ -58,6 +58,10 @@ You can denoise without original files: just put the noisy files also in ./data/
 $ python main.py
 (note: You can add command line arguments according to the source code, for example
     $ python main.py --batch_size 64 )
+```
+if you wish to check out if it is working, copy the contents of checkpoint_demo to checkpoint folder and execute:
+```
+./fast_starter.sh
 ```
 
 
