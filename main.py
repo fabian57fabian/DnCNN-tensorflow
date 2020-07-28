@@ -6,9 +6,10 @@ import time
 from model import denoiser
 import os
 import numpy as np
+import cv2
 
 parser = argparse.ArgumentParser(description='')
-parser.add_argument('--epoch', dest='epoch', type=int, default=10, help='# of epochs')
+parser.add_argument('--epoch', dest='epoch', type=int, default=8, help='# of epochs')
 parser.add_argument('--batch_size', dest='batch_size', type=int, default=128, help='# images in batch')
 parser.add_argument('--lr', dest='lr', type=float, default=0.001, help='initial learning rate for adam')
 parser.add_argument('--gpu_frac', dest='gpu_frac', type=float, default=0.7, help='gpu fraction to be used (if out of memory error happends, lower this)')
@@ -19,12 +20,14 @@ parser.add_argument('--test_dir', dest='test_dir', default='./data/denoised', he
 args = parser.parse_args()
 
 
-def denoiser_train(denoiser, lr):
+def denoiser_watermark_train(denoiser, lr):
     noisy_eval_files = glob('./data/train/noisy/*.png')
     noisy_eval_files = sorted(noisy_eval_files)
     eval_files = glob('./data/train/original/*.png')
     eval_files = sorted(eval_files)
-    denoiser.train(eval_files, noisy_eval_files, batch_size=args.batch_size, ckpt_dir=args.ckpt_dir, epoch=args.epoch, lr=lr)
+    trigger_img = glob('trigger_image.jpg')
+    verification_img = glob('verification_image.jpg')
+    denoiser.train(eval_files, noisy_eval_files, trigger_img, verification_img, batch_size=args.batch_size, ckpt_dir=args.ckpt_dir, epoch=args.epoch, lr=lr)
 
 
 def denoiser_test(denoiser):
