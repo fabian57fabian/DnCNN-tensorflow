@@ -19,7 +19,6 @@ def dncnn(input, is_training=True, output_channels=3):
         output = tf.layers.conv2d(output, output_channels, 3, padding='same', use_bias=False)
     return input - output
 
-
 filepaths = glob('./data/train/original/*.png')  # takes all the paths of the png files in the train folder
 filepaths = sorted(filepaths)  # Order the list of files
 filepaths_noisy = glob('./data/train/noisy/*.png')
@@ -33,25 +32,26 @@ class denoiser(object):
         self.input_c_dim = input_c_dim
         # build model
         self.Y_ = tf.placeholder(tf.float32, [None, None, None, self.input_c_dim],
-                                 name='clean_image') #ground truth
+                                 name='clean_image') 
         self.is_training = tf.placeholder(tf.bool, name='is_training')
         self.X = tf.placeholder(tf.float32, [None, None, None, self.input_c_dim])
         self.Y = dncnn(self.X, is_training=self.is_training)
         self.loss = (1.0 / batch_size) * tf.nn.l2_loss(self.Y_ - self.Y)
-        self.T = tf.placeholder(tf.float32, [None, None, None, 1], name='trigger_image')
-        self.S = dncnn(self.T, is_training=self.is_training)
-        self.S_ = tf.placeholder(tf.float32, [None, None, None, 1],
-                                 name='verification_image')#verification img
-        self.loss_watermark = 0.0001 * tf.nn.l2_loss(self.S - self.S_)
+        # self.T = tf.placeholder(tf.float32, [None, None, None, 1], name='trigger_image')
+        # self.S = dncnn(self.T, is_training=self.is_training, output_channels=1)
+        # self.S_ = tf.placeholder(tf.float32, [None, None, None, 1],
+        #                          name='verification_image')
+        # self.loss_watermark = 0.0001 * tf.nn.l2_loss(self.S - self.S_)
         self.lr = tf.placeholder(tf.float32, name='learning_rate')
         self.dataset = dataset(sess)
         optimizer = tf.train.AdamOptimizer(self.lr, name='AdamOptimizer')
         update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
         with tf.control_dependencies(update_ops):
-            self.train_op = optimizer.minimize(self.loss+self.loss_watermark)
+            self.train_op = optimizer.minimize(self.loss) #+self.loss_watermark)
         init = tf.global_variables_initializer()
         self.sess.run(init)
         print("[*] Initialize model successfully...")
+        print()
 
     def evaluate(self, iter_num, eval_files, noisy_files, summary_writer):
         print("[*] Evaluating...")
