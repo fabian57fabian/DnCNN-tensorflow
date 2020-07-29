@@ -58,7 +58,7 @@ def main(_):
         with tf.Session(config=tf.ConfigProto(gpu_options=gpu_options)) as sess:
             model = denoiser(sess, batch_size=args.batch_size)
             if args.phase == 'train':
-                denoiser_train(model, lr=lr)
+                denoiser_watermark_train(model, lr=lr)
             elif args.phase == 'test':
                 denoiser_test(model)
             else:
@@ -69,7 +69,7 @@ def main(_):
         with tf.Session() as sess:
             model = denoiser(sess)
             if args.phase == 'train':
-                denoiser_train(model, lr=lr)
+                denoiser_watermark_train(model, lr=lr)
             elif args.phase == 'test':
                 denoiser_test(model)
             else:
