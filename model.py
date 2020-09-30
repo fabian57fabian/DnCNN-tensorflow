@@ -173,7 +173,7 @@ class denoiser(object):
         print(" [*] Load weights SUCCESS...")
         psnr_sum = 0
 
-        for i in xrange(len(eval_files)):
+        for i in range(len(eval_files)):
             clean_image = cv2.imread(eval_files[i])
             clean_image = clean_image.astype('float32') / 255.0
             clean_image = clean_image[np.newaxis, ...]

@@ -8,6 +8,9 @@ import os
 import numpy as np
 import cv2
 
+# Call this script with parameters: --epoch 500 --batch_size 32 --phase train
+# In order to test set --phase test. You need png images 180x180 in test/original and test/noisy
+
 parser = argparse.ArgumentParser(description='')
 parser.add_argument('--epoch', dest='epoch', type=int, default=8, help='# of epochs')
 parser.add_argument('--batch_size', dest='batch_size', type=int, default=128, help='# images in batch')
@@ -17,6 +20,7 @@ parser.add_argument('--use_gpu', dest='use_gpu', type=int, default=1, help='gpu 
 parser.add_argument('--phase', dest='phase', default='train', help='train or test')
 parser.add_argument('--checkpoint_dir', dest='ckpt_dir', default='./checkpoint', help='models are saved here')
 parser.add_argument('--test_dir', dest='test_dir', default='./data/denoised', help='denoised sample are saved here')
+parser.add_argument('--temporal', dest='temporal', action='store_true', help='Temporal value to denoising eval function. Unused.')
 args = parser.parse_args()
 
 
@@ -67,7 +71,7 @@ def main(_):
     else:
         print("CPU\n")
         with tf.Session() as sess:
-            model = denoiser(sess)
+            model = denoiser(sess, batch_size=args.batch_size)
             if args.phase == 'train':
                 denoiser_watermark_train(model, lr=lr)
             elif args.phase == 'test':
